@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <string.h>
 #include "hmalloc.h"
-#include "hmalloc_test_funcs.h"
 
 struct block_meta {
     struct block_meta *next;
@@ -30,7 +29,7 @@ void merge_free_blocks()
             break;
         }
         if (curr->free == 1 && last->free == 1) {
-            // printf("merging\n");
+            // printff("merging\n");
             last->next = curr->next;
             last->size = curr->size + last->size + META_SIZE;
             curr = curr->next;
@@ -43,7 +42,7 @@ void merge_free_blocks()
 void separate_blocks(struct block_meta *curr, size_t size)
 {
     assert(curr->free);
-    // printf("separating\n");
+    // printff("separating\n");
     struct block_meta *new = (struct block_meta*)(((void*)(curr + 1)) + size);
     new->next = curr->next;
     new->size = curr->size - META_SIZE - size;
@@ -64,7 +63,7 @@ void *hmalloc(size_t size)
         block->size = size;
         block->free = 0;
         base = block;
-        // printf("first\n");
+        // printff("first\n");
         return (block + 1);
     }
 
@@ -73,7 +72,7 @@ void *hmalloc(size_t size)
     struct block_meta *last = base;
     while (curr) {
         if (curr->free == 1 && curr->size >= size) { // found block
-            // printf("found\n");
+            // printff("found\n");
             if (curr->size - size > META_SIZE) { // make separate empty block
                 separate_blocks(curr, size);
             }
@@ -95,7 +94,7 @@ void *hmalloc(size_t size)
     block->free = 0;
     block->size = size;
     last->next = block;
-    // printf("append\n");
+    // printff("append\n");
     return (block + 1);
 }
 
@@ -103,13 +102,13 @@ void *hmalloc(size_t size)
 void hfree(void *ptr)
 {
     if(!ptr) {
-        // printf("nothing freed\n");
+        // printff("nothing freed\n");
         return;
     }
     struct block_meta *block = (struct block_meta *)ptr - 1;
     assert(block->free == 0);
     block->free = 1;
-    // printf("freed\n");
+    // printff("freed\n");
     merge_free_blocks();
 }
 
@@ -129,7 +128,7 @@ void *hrealloc(void *ptr, size_t size)
     struct block_meta *last = base;
     while(curr) {
         if (curr->free == 1 && curr->size >= size) { // found block
-            // printf("found\n");
+            // printff("found\n");
             memcpy(curr + 1, ptr, block_ptr->size);
             hfree(ptr);
             if (curr->size - size > META_SIZE) { // make separate empty block
@@ -154,9 +153,20 @@ void *hrealloc(void *ptr, size_t size)
     last->next = block;
     block->size = size;
     memcpy(block + 1, ptr, block_ptr->size);
-    // printf("append\n");
+    // printff("append\n");
     return (block + 1);
 
+}
+
+inline void *hcalloc(size_t size, int n)
+{
+    return hmalloc(sizeof(size) * n);
+}
+
+void hreturn()
+{
+    brk(base);
+    base = NULL;
 }
 
 //-----------
@@ -179,23 +189,14 @@ inline void *debug_hrealloc(void *ptr, size_t size)
     return hrealloc(ptr, size);
 }
 
-//-----------
-// TEST FUNCS
-void print_next(void *ptr)
+inline void *debug_hcalloc(size_t size, int n)
 {
-    struct block_meta *block_ptr = (struct block_meta *)ptr - 1;
-    printf("%p\n", block_ptr->next);
+    printf("Callocing %ld * %d bytes\n", size, n);
+    return hcalloc(size, n);
 }
 
-void is_next(void *ptr1, void *ptr2)
+inline void debug_hreturn()
 {
-    struct block_meta *start, *end;
-    start = (struct block_meta *)ptr1 - 1;
-    end = (struct block_meta *)ptr2 - 1;
-    assert(start->next == end);
-}
-
-inline void hmalloc_reset()
-{
-    base = NULL;
+    printf("hreturn called, base reset\n");
+    hreturn();
 }

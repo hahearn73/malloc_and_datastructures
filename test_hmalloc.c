@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "hmalloc.h"
-#include "hmalloc_debug.h"
+// #include "hmalloc_debug.h"
 
 // these three funcs should run after each other with no reset
 void simple_found();
@@ -14,8 +14,10 @@ void no_merge();
 void fragmentation_funcs();
 void realloc_found();
 void realloc_append();
+void calloc_test();
+void hreturn_test();
 
-// independent tests
+// independent funcs
 void hfree_nullptr();
 void realloc_null();
 void realloc_downsize();
@@ -32,6 +34,8 @@ int main()
     realloc_downsize();
     realloc_found();
     realloc_append();
+    calloc_test();
+    hreturn_test();
 }
 
 // finds open block
@@ -72,7 +76,7 @@ void multi_found()
 void no_merge()
 {
     printf("---NO MERGE---\n");
-    hmalloc_reset();
+    hreturn();
     void *ptr = hmalloc(10000);
     void *ptr2 = hmalloc(10);
     void *ptr3 = hmalloc(300);
@@ -88,7 +92,7 @@ void hfree_nullptr()
 void fragmentation_funcs()
 {
     printf("---FRAGMENTATION FUNCS---\n");
-    hmalloc_reset();
+    hreturn();
     // section proves that separate_blocks is occuring
     void *ptr = hmalloc(500);
     void *ptr_last = hmalloc(500);
@@ -131,7 +135,7 @@ void realloc_downsize()
 void realloc_found()
 {
     printf("---REALLOC FOUND---\n");
-    hmalloc_reset();
+    hreturn();
     void *temp = hmalloc(500);
     int *ptr = (int *) hmalloc(sizeof(int) * 100);
     for (int i = 0; i < 100; i++)
@@ -152,10 +156,29 @@ void realloc_found()
 void realloc_append()
 {
     printf("---REALLOC APPEND---\n");
-    hmalloc_reset();
+    hreturn();
     int *ptr = (int *) hmalloc(sizeof(int) * 100);
     for (int i = 0; i < 100; i++)
         ptr[i] = i;
     ptr = hrealloc(ptr, sizeof(int) * 200);
     hfree(ptr);
+}
+
+void calloc_test()
+{
+    printf("---CALLOC---\n");
+    hreturn();
+    void *ptr = hcalloc(10, 10);
+    hfree(ptr);
+
+}
+void hreturn_test()
+{
+    printf("---HRETURN---\n");
+    hreturn();
+    void *ptr = hmalloc(10);
+    hreturn();
+    void *ptr2 = hmalloc(10);
+    hreturn();
+    assert(ptr == ptr2);
 }
