@@ -19,7 +19,6 @@ notes for my implementation:
     it into two adjacent blocks based on the size parameter, size being the size
     of the first block (internal fragmentation)
     added a debugger using macros
-    tested it (article above claims very little testing was done)
     added the ability to give the whole heap back to the os using hreturn as
     hfree just gives it back to the implicit list to be used again for another
     hmalloc call
