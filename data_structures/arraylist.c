@@ -3,7 +3,7 @@
 #include <assert.h>
 
 #include "arraylist.h"
-#include "hmalloc.h"
+#include "../hmalloc/hmalloc.h"
 
 void expand(arraylist *arr);
 void shrink(arraylist *arr);

@@ -4,7 +4,7 @@
 
 #include "stack.h"
 #include "arraylist.h"
-#include "hmalloc.c"
+#include "../hmalloc/hmalloc.h"
 
 typedef struct stack {
     arraylist *arr;

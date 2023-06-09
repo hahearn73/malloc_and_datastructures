@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "hashtable.h"
-#include "hmalloc.h"
+#include "../hmalloc/hmalloc.h"
 
 #define TABLE_SIZE 1024
 #define EMPTY -1

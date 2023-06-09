@@ -3,7 +3,7 @@
 #include <assert.h>
 
 #include "linkedlist.h"
-#include "hmalloc.h"
+#include "../hmalloc/hmalloc.h"
 
 struct node;
 
