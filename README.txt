@@ -1,9 +1,6 @@
 Harry Ahearn
 less of a true README, more general regards from program author
 
-exec testsuite
-LD_LIBRARY_PATH="/home/harry/Documents/stuff/hmalloc;$LD_LIBRARY_PATH" ./testsuite
-
 read this tutorial beforehand for basic ideas: https://danluu.com/malloc-tutorial/
 notable similarities:
     struct block_meta
