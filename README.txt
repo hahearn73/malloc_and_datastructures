@@ -5,8 +5,6 @@ $ make
 to make a single library called hlib.so. This file can be used to call hmalloc
 and the data types that use it
 
-to use
-
 
 read this tutorial beforehand for basic ideas: https://danluu.com/malloc-tutorial/
 notable similarities:
