@@ -29,4 +29,3 @@ $(LIBRARY): $(OBJECTS)
 # Clean up object and library files
 clean:
 	rm -f $(OBJECTS) $(LIBRARY)
-
